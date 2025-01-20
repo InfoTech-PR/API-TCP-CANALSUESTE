@@ -1,1 +1,5 @@
-# API-TCP-CANALSUESTE
+# Uso
+
+- npm init
+- npm install
+- Atualize o .env
