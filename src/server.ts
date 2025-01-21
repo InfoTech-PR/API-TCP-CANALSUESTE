@@ -1,13 +1,11 @@
 import express from 'express';
-import bodyParser from 'body-parser';
-import { consultaNavioController } from './controllers/tcpController';
+import router from './routes/Routes';
 
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.json());
-
-app.post('/consulta-navio', consultaNavioController);
+app.use(express.json());
+app.use('/', router);
 
 app.listen(port, () => {
   console.log(`Servidor rodando em http://localhost:${port}`);

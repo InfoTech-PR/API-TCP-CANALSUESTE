@@ -1,39 +1,42 @@
+import { Request, Response } from 'express';
 import soap from 'soap';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const url = 'https://wsc-hom.tcp.com.br/services/WebservicesClientes_ConsultaPublica?wsdl';
+const url = 'https://wsc-hom.tcp.com.br/services/WebservicesClientes_ConsultaPublica.WebservicesClientes_ConsultaPublicaHttpsSoap12Endpoint?wsdl';
 
-export const getNavioData = (navio: string, status: string, dataInicio: string, dataFinal: string) => {
-  return new Promise((resolve, reject) => {
-    soap.createClient(url, (err, client: any) => {
-      if (err) {
-        reject('Erro ao criar cliente SOAP: ' + err);
-        return;
-      }
+export const consultaNavio = async (
+  navio: string,
+  dataInicio: string,
+  dataFinal: string,
+  status: string
+): Promise<any> => {
+  const requestParams = {
+    Navio: navio,
+    Status: status || '',
+    DataInicio: dataInicio,
+    DataFinal: dataFinal,
+  };
 
-      const authHeader = {
-        Username: process.env.USER,
-        Password: process.env.PASSWORD,
-      };
+  try {
+    const client = await soap.createClientAsync(url);
 
-      client.addSoapHeader(authHeader);
+    const authHeader = {
+      Username: process.env.USER,
+      Password: process.env.PASSWORD,
+    };
 
-      const requestParams = {
-        Navio: navio,
-        Status: status,
-        DataInicio: dataInicio,
-        DataFinal: dataFinal,
-      };
+    client.addSoapHeader(authHeader);
 
-      client.ConsultaNavio(requestParams, (err: any, result: any) => {
-        if (err) {
-          reject('Erro na requisição SOAP: ' + err);
-        } else {
-          resolve(result);
-        }
-      });
-    });
-  });
+    const [result] = await client.ConsultaNavioAsync(requestParams);
+
+    return result;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Erro ao realizar consulta SOAP: ${error.message}`);
+    } else {
+      throw new Error('Erro desconhecido ao realizar consulta SOAP');
+    }
+  }
 };
