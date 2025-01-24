@@ -1,36 +1,46 @@
 from flask import Blueprint, request, jsonify
 from zeep import Client
+from zeep.transports import Transport
 from requests.auth import HTTPBasicAuth
 import requests
+from config import Config
 
 consulta_navio = Blueprint('consulta_navio', __name__)
 
 @consulta_navio.route('/consulta_navio', methods=['GET'])
 def consulta_navio_endpoint():
-    navio = request.args.get('Navio', default="MSC MELINE", type=str)
-    status = request.args.get('Status', default="", type=str)
-    data_inicio = request.args.get('DataInicio', default="2019-05-24", type=str)
-    data_final = request.args.get('DataFinal', default="2019-05-24", type=str)
+    # Obtendo os parâmetros diretamente da URL
+    navio = request.args.get('Navio', default=None, type=str)
+    status = request.args.get('Status', default=None, type=str)
+    data_inicio = request.args.get('DataInicio', default=None, type=str)
+    data_final = request.args.get('DataFinal', default=None, type=str)
 
-    # URL do serviço SOAP
-    url = 'https://wsc-hom.tcp.com.br/services/WebservicesClientes_ConsultaPublica?wsdl'
+    if not navio or not data_inicio or not data_final:
+        return jsonify({"error": "Parametros 'Navio', 'DataInicio' e 'DataFinal' são obrigatórios!"}), 400
 
-    # Autenticação (usuário e senha)
-    auth = HTTPBasicAuth('wssueste', '!wssueste&2024%')
+    # Configurações do SOAP e Autenticação
+    auth = HTTPBasicAuth(Config.USERNAME, Config.PASSWORD)
     session = requests.Session()
     session.auth = auth
 
-    # Configurando o cliente Zeep
+    # URL do serviço SOAP
+    url = Config.WSDL_URL
+
+    # Criando o cliente Zeep para consumir o serviço SOAP
     client = Client(url, transport=Transport(session=session))
 
-    # Fazendo a requisição SOAP
     try:
+        # Realizando a requisição ao serviço SOAP
         response = client.service.ConsultaNavio(
             Navio=navio,
             Status=status,
             DataInicio=data_inicio,
             DataFinal=data_final
         )
+
+        # Retornando a resposta do serviço
         return jsonify(response)
+
     except Exception as e:
+        # Retornando erro caso algo aconteça na consulta
         return jsonify({"error": str(e)}), 500
