@@ -25,6 +25,7 @@
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.6.5",
     "soap": "^1.1.7",
+    "strong-soap": "^4.1.8",
     "typescript": "^5.2.2",
     "validator": "^13.6.0",
     "xml2js": "^0.6.2"
