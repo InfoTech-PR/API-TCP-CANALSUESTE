@@ -13,7 +13,7 @@ def consulta_grade_endpoint():
 
     client = get_soap_client(Config.WSDL_URL_GRADE)
     try:
-        response = client.service.ConsultarGradesExportacao(DataPrevista=data_prevista)
+        response = client.service.ConsultarGrades(DataPrevista=data_prevista)
         return jsonify(response)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
