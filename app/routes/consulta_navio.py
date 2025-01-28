@@ -6,10 +6,11 @@ consulta_navio = Blueprint('consulta_navio', __name__)
 
 @consulta_navio.route('/consulta_navio', methods=['GET'])
 def consulta_navio_endpoint():
-    navio = request.args.get('Navio')
-    status = request.args.get('Status')
-    data_inicio = request.args.get('DataInicio')
-    data_final = request.args.get('DataFinal')
+    data = request.json
+    navio = data.get('Navio')
+    status = data.get('Status')
+    data_inicio = data.get('DataInicio')
+    data_final = data.get('DataFinal')
 
     if not navio or not data_inicio or not data_final:
         return jsonify({"error": "Parâmetros 'Navio', 'DataInicio' e 'DataFinal' são obrigatórios!"}), 400
