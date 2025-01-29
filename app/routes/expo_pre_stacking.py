@@ -7,6 +7,7 @@ registrar_prestacking_cheio = Blueprint('registrar_prestacking_cheio', __name__)
 
 @obter_dados_booking.route('/obter_dados_booking', methods=['GET'])
 def obter_dados_booking_endpoint():
+    
 
 @registrar_prestacking_cheio.route('/registrar_prestacking_cheio', methods=['POST'])
 def registrar_prestacking_cheio_endpoint():

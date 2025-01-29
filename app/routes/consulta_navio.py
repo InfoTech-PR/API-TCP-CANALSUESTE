@@ -23,6 +23,7 @@ def consulta_navio_endpoint():
             DataInicio=data_inicio,
             DataFinal=data_final
         )
-        return jsonify(response)
+        response_dict = response.__dict__ if hasattr(response, '__dict__') else str(response)
+        return jsonify(response_dict)
     except Exception as e:
         return jsonify({"error": str(e)}), 500

@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from app.utils.soap_client import get_soap_client
 from config.config import Config
+import json
+from app.functions import to_serializable
 
 agendar_unidade = Blueprint('agendar_unidade', __name__)
 consultar_grade = Blueprint('consultar_grade', __name__)
@@ -10,7 +12,7 @@ deletar_agenda_unidade = Blueprint('deletar_agenda_unidade', __name__)
 @agendar_unidade.route('/agendar_unidade', methods=['POST'])
 def agendar_unidade_endpoint():
     data = request.json
-    
+
     data_prevista = data.get('DataPrevista')
     grade_configuracao = data.get('GradeConfiguracao')
     tipo_grade = data.get('TipoGrade')
@@ -43,7 +45,8 @@ def agendar_unidade_endpoint():
             Conteineres=[{'Conteiner': conteiner}],
             DataPrevista=data_prevista
         )
-        return jsonify(response)
+        response_dict = to_serializable(response)
+        return jsonify(response_dict)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -58,7 +61,8 @@ def consultar_grade_endpoint():
     client = get_soap_client(Config.WSDL_URL_GRADE)
     try:
         response = client.service.ConsultarGrades(DataPrevista=data_prevista)
-        return jsonify(response)
+        response_dict = to_serializable(response)
+        return jsonify(response_dict)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -94,7 +98,8 @@ def editar_agenda_unidade_endpoint():
             Conteineres=[{'Conteiner': conteiner} for conteiner in conteineres],
             DataPrevista=data_prevista
         )
-        return jsonify(response)
+        response_dict = to_serializable(response)
+        return jsonify(response_dict)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -113,6 +118,7 @@ def deletar_agenda_unidade_endpoint():
         response = client.service.ExcluirAgendamentoUnidades(
             IdAgendamento=id_agendamento
         )
-        return jsonify(response)
+        response_dict = to_serializable(response)
+        return jsonify(response_dict)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
