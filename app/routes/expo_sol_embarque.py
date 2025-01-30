@@ -4,6 +4,7 @@ from config.config import Config
 
 consulta_due = Blueprint('consulta_due', __name__)
 solicitar_ordem_embarque_due = Blueprint('solicitar_ordem_embarque_due', __name__)
+consulta_movimentacao = Blueprint('consulta_movimentacao', __name__)
 
 @consulta_due.route('/consulta_due', methods=['GET'])
 def consulta_due_booking_endpoint():
@@ -19,6 +20,26 @@ def consulta_due_booking_endpoint():
         return jsonify(response_dict)
     except Exception as e:
         return jsonify({"error": str(e)}), 500 
+
+@consulta_movimentacao.route('/consulta_movimentacao', methods=['GET'])
+def consulta_movimentacao_endpoint():
+    data = request.json
+    data_inicio = data.get('DataInicio')
+    data_fim = data.get('DataFim')
+
+    if not data_inicio or not data_fim:
+        return jsonify({"error": "Parâmetros 'DataInicio', 'DataFim' são obrigatórios!"}), 400
+
+    client = get_soap_client(Config.WSDL_URL_EMBARQUE)
+    try:
+        response = client.service.ConsultarMovimentacao(
+            DataInicio=data_inicio,
+            DataFim=data_fim
+        )
+        response_dict = to_serializable(response)
+        return jsonify(response_dict)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @solicitar_ordem_embarque_due.route('/solicitar_ordem_embarque_due', methods=['POST'])
 def solicitar_ordem_embarque_due_endpoint():
