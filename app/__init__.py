@@ -16,7 +16,7 @@ def create_app():
     
     @app.route('/', methods=['GET'])
     def home():
-        rotas = {rule.rule for rule in app.url_map.iter_rules()}
+        rotas = [rule.rule for rule in app.url_map.iter_rules()]
         return jsonify(
             {
                 "Message": "Bem-vindo a API DO CANAL SUESTE!", 
