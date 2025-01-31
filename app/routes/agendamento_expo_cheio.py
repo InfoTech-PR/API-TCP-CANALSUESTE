@@ -45,7 +45,7 @@ def agendar_unidade_endpoint():
         DataPrevista=data_prevista
     )
 
-@consultar_grade.route('/consultar_grade', methods=['GET'])
+@consultar_grade.route('/consultar_grade', methods=['POST'])
 def consultar_grade_endpoint():
     data = request.json
     data_prevista = data.get('DataPrevista')

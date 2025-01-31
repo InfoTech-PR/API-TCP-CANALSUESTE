@@ -5,7 +5,7 @@ from app.utils.soap_handler import call_soap_service
 
 consulta_navio = Blueprint('consulta_navio', __name__)
 
-@consulta_navio.route('/consulta_navio', methods=['GET'])
+@consulta_navio.route('/consulta_navio', methods=['POST'])
 def consulta_navio_endpoint():
     data = request.json
     navio = data.get('Navio')

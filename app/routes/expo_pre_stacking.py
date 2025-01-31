@@ -6,7 +6,7 @@ from config.config import Config
 obter_dados_booking = Blueprint('obter_dados_booking', __name__)
 registrar_prestacking_cheio = Blueprint('registrar_prestacking_cheio', __name__)
 
-@obter_dados_booking.route('/obter_dados_booking', methods=['GET'])
+@obter_dados_booking.route('/obter_dados_booking', methods=['POST'])
 def obter_dados_booking_endpoint():
     data = request.json
     booking = data.get('Booking')
