@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.utils.soap_client import get_soap_client
+from app.utils.soap_handler import call_soap_service
 from config.config import Config
 
 bloqueio_nvo = Blueprint('bloqueio_nvo', __name__)
@@ -19,15 +20,7 @@ def bloqueio_nvo_endpoint():
         return jsonify({"error": "Todos os campos são obrigatórios!"}), 400
     
     client = get_soap_client(Config.WSDL_URL_IMPORTACAO)
-    try:
-        response = client.service.BloqueioNVO(
-            CEMaster=ce_master, BLMaster=bl_master, 
-            CEHouse=ce_house, BLHouse=bl_house, Acao=acao
-        )
-        response_dict = to_serializable(response)
-        return jsonify(response_dict)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return call_soap_service(client, "BloqueioNVO", CEMaster=ce_master, BLMaster=bl_master, CEHouse=ce_house, BLHouse=bl_house, Acao=acao)
 
 @bloqueio_nvo_master.route('/bloqueio_nvo_master', methods=['POST'])
 def bloqueio_nvo_master_endpoint():
@@ -38,13 +31,9 @@ def bloqueio_nvo_master_endpoint():
         return jsonify({"error": "O campo 'BLMaster' é obrigatório!"}), 400
     
     client = get_soap_client(Config.WSDL_URL_IMPORTACAO)
-    try:
-        response = client.service.BloqueioNVOMaster(BLMaster=bl_master)
-        response_dict = to_serializable(response)
-        return jsonify(response_dict)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return call_soap_service(client, "BloqueioNVOMaster", BLMaster=bl_master)
 
+# VERIFICAR ESTA FUNÇÃO
 @movimentacao_importacao.route('/movimentacao_importacao', methods=['GET'])
 def movimentacao_importacao_endpoint():
     data = request.json
@@ -58,12 +47,4 @@ def movimentacao_importacao_endpoint():
         return jsonify({"error": "Todos os campos são obrigatórios!"}), 400
     
     client = get_soap_client(Config.WSDL_URL_IMPORTACAO)
-    try:
-        response = client.service.ConsultaMovimentacao(
-            CeMercante=ce_mercante, TipoOperacao=tipo_operacao,
-            DataInicial=data_inicial, DataFinal=data_final
-        )
-        response_dict = to_serializable(response)
-        return jsonify(response_dict)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return call_soap_service(client, "ConsultaMovimentacao", CeMercante=ce_mercante, TipoOperacao=tipo_operacao, DataInicial=data_inicial, DataFinal=data_final)

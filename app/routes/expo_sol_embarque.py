@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.utils.soap_client import get_soap_client
+from app.utils.soap_handler import call_soap_service
 from config.config import Config
 
 consulta_due = Blueprint('consulta_due', __name__)
@@ -14,12 +15,7 @@ def consulta_due_booking_endpoint():
         return jsonify({"error": "Parâmetro 'NumeroDue' é obrigatório!"}), 400
 
     client = get_soap_client(Config.WSDL_URL_EMBARQUE)
-    try:
-        response = client.service.ConsultarDue(NumeroDue=numero_due)
-        response_dict = to_serializable(response)
-        return jsonify(response_dict)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500 
+    return call_soap_service(client, "ConsultarDue", NumeroDue=numero_due)
 
 @solicitar_ordem_embarque_due.route('/solicitar_ordem_embarque_due', methods=['POST'])
 def solicitar_ordem_embarque_due_endpoint():
@@ -36,9 +32,4 @@ def solicitar_ordem_embarque_due_endpoint():
 
     conteineres_soap = [{"Conteiner": c["Conteiner"]} for c in conteineres]
     client = get_soap_client(Config.WSDL_URL_EMBARQUE)
-    try:
-        response = client.service.SolicitarOrdemEmbarqueDue(NumeroDue=numero_due, AceiteAvarias=aceite_avarias, Conteineres=conteineres_soap)
-        response_dict = to_serializable(response)
-        return jsonify(response_dict)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return call_soap_service(client, "SolicitarOrdemEmbarqueDue", NumeroDue=numero_due, AceiteAvarias=aceite_avarias, Conteineres=conteineres_soap)

@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.utils.soap_client import get_soap_client
+from app.utils.soap_handler import call_soap_service
 from config.config import Config
 
 consulta_movimentacao = Blueprint('consulta_movimentacao', __name__)
@@ -14,11 +15,4 @@ def consulta_movimentacao_endpoint():
         return jsonify({"error": "Parâmetros 'DataInicio', 'DataFim' são obrigatórios!"}), 400
 
     client = get_soap_client(Config.WSDL_URL_EMBARQUE)
-    try:
-        response = client.service.ConsultarMovimentacao(
-            DataInicio=data_inicio,
-            DataFim=data_fim
-        )
-        return response
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return call_soap_service(client, "ConsultarMovimentacao", DataInicio=data_inicio, DataFim=data_fim)

@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.utils.soap_client import get_soap_client
+from app.utils.soap_handler import call_soap_service
 from config.config import Config
 
 obter_dados_booking = Blueprint('obter_dados_booking', __name__)
@@ -14,12 +15,7 @@ def obter_dados_booking_endpoint():
         return jsonify({"error": "Parâmetro 'Armador' e 'Booking' é obrigatório!"}), 400
 
     client = get_soap_client(Config.WSDL_URL_PRESTACKING)
-    try:
-        response = client.service.ObterDadosBooking(Booking=booking, Armador=armador)
-        response_dict = to_serializable(response)
-        return jsonify(response_dict)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500  
+    return call_soap_service(client, "ObterDadosBooking", Booking=booking, Armador=armador)
 
 @registrar_prestacking_cheio.route('/registrar_prestacking_cheio', methods=['POST'])
 def registrar_prestacking_cheio_endpoint():
@@ -36,14 +32,4 @@ def registrar_prestacking_cheio_endpoint():
         'DadosExportacao': dados_exportacao  
     }
     client = get_soap_client(Config.WSDL_URL_PRESTACKING)
-    
-    try:
-        response = client.service.RegistrarPrestackingCheio(
-            ListaNFe=lista_nfe, 
-            DadosExportacao=dados_exportacao 
-        )
-        response_dict = to_serializable(response)
-        return jsonify(response_dict)
-    
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    call_soap_service(client, "RegistrarPrestackingCheio", ListaNFe=lista_nfe, DadosExportacao=dados_exportacao)
