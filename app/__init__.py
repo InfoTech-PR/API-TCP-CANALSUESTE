@@ -16,11 +16,11 @@ def create_app():
     
     @app.route('/', methods=['GET'])
     def home():
-        rotas = {rule.endpoint: rule.rule for rule in app.url_map.iter_rules()}
+        rotas = {rule.rule for rule in app.url_map.iter_rules()}
         return jsonify(
             {
-                "message": "Bem-vindo a API DO CANAL SUESTE!", 
-                "developed by": "Josue Henrique InfoTech",
+                "Message": "Bem-vindo a API DO CANAL SUESTE!", 
+                "Developed by": "Josue Henrique InfoTech",
                 "Rotas": rotas
             }
         )
