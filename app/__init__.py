@@ -16,7 +16,7 @@ def create_app():
     
     @app.route('/', methods=['GET'])
     def home():
-        return jsonify({"message": "Bem-vindo à API DO CANAL SUESTE! \n Developed by: Josue Henrique InfoTech"})
+        return jsonify({"message": "Bem-vindo à API DO CANAL SUESTE!", "developed by": "Josue Henrique InfoTech"})
 
     app.register_blueprint(consulta_navio)
     app.register_blueprint(consultar_grade)
