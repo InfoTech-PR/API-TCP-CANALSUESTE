@@ -1,3 +1,4 @@
+import os
 from flask import Flask, jsonify
 from config.config import Config
 import logging
@@ -16,7 +17,14 @@ def create_app():
     
     @app.route('/', methods=['GET'])
     def home():
-        return jsonify({"message": "Bem-vindo a API DO CANAL SUESTE!", "developed by": "Josue Henrique InfoTech"})
+        arquivo_path = 'anotacoes.txt'
+
+        if os.path.exists(arquivo_path):
+            with open(arquivo_path, 'r') as file:
+                conteudo = file.read()
+            return jsonify({"message": conteudo})
+        else:
+            return jsonify({"error": "Arquivo anotacoes.txt não encontrado!"}), 404
 
     app.register_blueprint(consulta_navio)
     app.register_blueprint(consultar_grade)
