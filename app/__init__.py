@@ -9,7 +9,7 @@ from app.routes.expo_rolagem import rolagem_carga
 from app.routes.expo_mov_expo import consulta_movimentacao
 from app.routes.importacao import bloqueio_nvo, bloqueio_nvo_master, movimentacao_importacao
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 
 def create_app():
     app = Flask(__name__)

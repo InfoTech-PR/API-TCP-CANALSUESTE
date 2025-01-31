@@ -19,7 +19,6 @@ def consulta_movimentacao_endpoint():
             DataInicio=data_inicio,
             DataFim=data_fim
         )
-        response_dict = to_serializable(response)
-        return jsonify(response_dict)
+        return response
     except Exception as e:
         return jsonify({"error": str(e)}), 500

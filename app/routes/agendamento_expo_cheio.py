@@ -1,8 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.utils.soap_client import get_soap_client
+from app.utils.soap_handler import call_soap_service
 from config.config import Config
-import json
-from app.functions import to_serializable
 
 agendar_unidade = Blueprint('agendar_unidade', __name__)
 consultar_grade = Blueprint('consultar_grade', __name__)
@@ -21,34 +20,30 @@ def agendar_unidade_endpoint():
     veiculo_tipo = data.get('VeiculoTipo')
     veiculo_placa_principal = data.get('VeiculoPlacaPrincipal')
     conteiner = data.get('Conteiner')
+    placa_reboque1 = data.get('PlacaReboque1')
+    placa_reboque2 = data.get('PlacaReboque2')
 
     if not data_prevista or not grade_configuracao or not tipo_grade or not transportadora or not motorista:
         return jsonify({"error": "Todos os parâmetros são obrigatórios!"}), 400
 
-    placa_reboque1 = data.get('PlacaReboque1', '')
-    placa_reboque2 = data.get('PlacaReboque2', '')
-
     client = get_soap_client(Config.WSDL_URL_GRADE)
 
-    try:
-        response = client.service.AgendarUnidades(
-            GradeConfiguracao=grade_configuracao,
-            TipoGrade=tipo_grade,
-            Transportadora=transportadora,
-            Motorista=motorista,
-            Veiculo={
-                'Tipo': veiculo_tipo,
-                'PlacaPrincipal': veiculo_placa_principal,
-                'PlacaReboque1': placa_reboque1,
-                'PlacaReboque2': placa_reboque2
-            },
-            Conteineres=[{'Conteiner': conteiner}],
-            DataPrevista=data_prevista
-        )
-        response_dict = to_serializable(response)
-        return jsonify(response_dict)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return call_soap_service(
+        client,
+        "AgendarUnidades",
+        GradeConfiguracao=grade_configuracao,
+        TipoGrade=tipo_grade,
+        Transportadora=transportadora,
+        Motorista=motorista,
+        Veiculo={
+            'Tipo': veiculo_tipo,
+            'PlacaPrincipal': veiculo_placa_principal,
+            'PlacaReboque1': placa_reboque1,
+            'PlacaReboque2': placa_reboque2
+        },
+        Conteineres=[{'Conteiner': conteiner}],
+        DataPrevista=data_prevista
+    )
 
 @consultar_grade.route('/consultar_grade', methods=['GET'])
 def consultar_grade_endpoint():
@@ -59,12 +54,7 @@ def consultar_grade_endpoint():
         return jsonify({"error": "Parâmetro 'DataPrevista' é obrigatório!"}), 400
 
     client = get_soap_client(Config.WSDL_URL_GRADE)
-    try:
-        response = client.service.ConsultarGrades(DataPrevista=data_prevista)
-        response_dict = to_serializable(response)
-        return jsonify(response_dict)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return call_soap_service(client, "ConsultarGrades", DataPrevista=data_prevista)
 
 @editar_agenda_unidade.route('/editar_agenda_unidade', methods=['POST'])
 def editar_agenda_unidade_endpoint():
@@ -82,26 +72,21 @@ def editar_agenda_unidade_endpoint():
         return jsonify({"error": "Todos os parâmetros são obrigatórios!"}), 400
 
     client = get_soap_client(Config.WSDL_URL_GRADE)
-
-    try:
-        response = client.service.EditarAgendamentoUnidades(
-            IdAgendamento=id_agendamento,
-            GradeConfiguracao=grade_configuracao,
-            Transportadora=transportadora,
-            Motorista=motorista,
-            Veiculo={
-                'Tipo': veiculo.get('Tipo'),
-                'PlacaPrincipal': veiculo.get('PlacaPrincipal'),
-                'PlacaReboque1': veiculo.get('PlacaReboque1', ''),
-                'PlacaReboque2': veiculo.get('PlacaReboque2', '')
-            },
-            Conteineres=[{'Conteiner': conteiner} for conteiner in conteineres],
-            DataPrevista=data_prevista
-        )
-        response_dict = to_serializable(response)
-        return jsonify(response_dict)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return call_soap_service(
+        client, "EditarAgendamentoUnidades", 
+        IdAgendamento=id_agendamento,
+        GradeConfiguracao=grade_configuracao,
+        Transportadora=transportadora,
+        Motorista=motorista,
+        Veiculo={
+            'Tipo': veiculo.get('Tipo'),
+            'PlacaPrincipal': veiculo.get('PlacaPrincipal'),
+            'PlacaReboque1': veiculo.get('PlacaReboque1', ''),
+            'PlacaReboque2': veiculo.get('PlacaReboque2', '')
+        },
+        Conteineres=[{'Conteiner': conteiner} for conteiner in conteineres],
+        DataPrevista=data_prevista
+    )
 
 @deletar_agenda_unidade.route('/deletar_agenda_unidade', methods=['POST'])
 def deletar_agenda_unidade_endpoint():
@@ -113,12 +98,4 @@ def deletar_agenda_unidade_endpoint():
         return jsonify({"error": "O parâmetro 'IdAgendamento' é obrigatório!"}), 400
 
     client = get_soap_client(Config.WSDL_URL_GRADE)
-
-    try:
-        response = client.service.ExcluirAgendamentoUnidades(
-            IdAgendamento=id_agendamento
-        )
-        response_dict = to_serializable(response)
-        return jsonify(response_dict)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    return call_soap_service(client, "ExcluirAgendamentoUnidades", IdAgendamento=id_agendamento)
