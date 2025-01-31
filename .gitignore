@@ -1,13 +1,7 @@
 # Ignorar arquivos Python compilados
 *.pyc
 *.pyo
-__pycache__/
-
-# Ignorar __pycache__ em subpastas
-app/__pycache__/
-config/__pycache__/
-app/routes/__pycache__/
-app/utils/__pycache__/
+pycache
 
 # Ignorar arquivos de configuração de IDEs (opcional)
 .vscode/

@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 from config.config import Config
 import logging
 from app.routes.consulta_navio import consulta_navio
@@ -13,6 +13,10 @@ from app.routes.importacao import bloqueio_nvo, bloqueio_nvo_master, movimentaca
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    
+    @app.route('/', methods=['GET'])
+    def home():
+        return jsonify({"message": "Bem-vindo à API DO CANAL SUESTE! \n Developed by: Josue Henrique InfoTech"})
 
     app.register_blueprint(consulta_navio)
     app.register_blueprint(consultar_grade)
