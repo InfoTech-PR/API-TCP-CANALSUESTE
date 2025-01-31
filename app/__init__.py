@@ -16,7 +16,14 @@ def create_app():
     
     @app.route('/', methods=['GET'])
     def home():
-        return jsonify({"message": "Bem-vindo a API DO CANAL SUESTE!", "developed by": "Josue Henrique InfoTech"})
+        rotas = {rule.endpoint: rule.rule for rule in app.url_map.iter_rules()}
+        return jsonify(
+            {
+                "message": "Bem-vindo a API DO CANAL SUESTE!", 
+                "developed by": "Josue Henrique InfoTech",
+                "Rotas": rotas
+            }
+        )
 
     app.register_blueprint(consulta_navio)
     app.register_blueprint(consultar_grade)
