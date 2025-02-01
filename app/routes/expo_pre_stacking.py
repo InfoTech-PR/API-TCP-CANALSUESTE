@@ -32,4 +32,4 @@ def registrar_prestacking_cheio_endpoint():
         'DadosExportacao': dados_exportacao  
     }
     client = get_soap_client(Config.WSDL_URL_PRESTACKING)
-    call_soap_service(client, "RegistrarPrestackingCheio", ListaNFe=lista_nfe, DadosExportacao=dados_exportacao)
+    return call_soap_service(client, "RegistrarPrestackingCheio", ListaNFe=lista_nfe, DadosExportacao=dados_exportacao)

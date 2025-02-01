@@ -4,4 +4,4 @@ class ConfigExample:
     WSDL_URL3 = 'https://seulink?wsdl3'
     USERNAME = 'seu_usuario'
     PASSWORD = 'sua_senha'
-    PORT = 
+    PORT = 0000
