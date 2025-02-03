@@ -1,6 +1,7 @@
 from flask import Flask, jsonify
 from config.config import Config
 import logging
+from flask_cors import CORS
 from app.routes.consulta_navio import consulta_navio
 from app.routes.agendamento_expo_cheio import agendar_unidade, consultar_grade, editar_agenda_unidade, deletar_agenda_unidade
 from app.routes.expo_pre_stacking import obter_dados_booking, registrar_prestacking_cheio
@@ -13,6 +14,8 @@ from app.routes.importacao import bloqueio_nvo, bloqueio_nvo_master, movimentaca
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+    CORS(app)
+    # CORS(app, resources={r"/api/*": {"origins": "http://example.com"}})
     
     @app.route('/', methods=['GET'])
     def home():
