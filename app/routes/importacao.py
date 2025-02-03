@@ -36,7 +36,6 @@ def bloqueio_nvo_master_endpoint():
 @movimentacao_importacao.route('/movimentacao_importacao', methods=['POST'])
 def movimentacao_importacao_endpoint():
     data = request.json
-    empresa = data.get('EmpresaSelecionada')
     ce_mercante = data.get('CeMercante')
     tipo_operacao = data.get('TipoOperacao')
     data_inicial = data.get('DataInicial')
@@ -45,10 +44,20 @@ def movimentacao_importacao_endpoint():
     
     if not all([ce_mercante, tipo_operacao, data_inicial, data_final, empresa_selecionada]):
         return jsonify({"error": "Todos os campos são obrigatórios!"}), 400
-
-    headers = {
-        'wsc:EmpresaSelecionada': empresa
-    }
     
-    client = get_soap_client(Config.WSDL_URL_IMPORTACAO) #deve passar aqui o header (do jeito q fiz ainda n funciona)
-    return call_soap_service(client, "ConsultarMovimentacao", CeMercante=ce_mercante, TipoOperacao=tipo_operacao, DataInicial=data_inicial, DataFinal=data_final)
+    client = get_soap_client(Config.WSDL_URL_IMPORTACAO)
+    
+    header = {
+        'RequestHeader': {
+            'EmpresaSelecionada': empresa_selecionada
+        }
+    }
+
+    body = {
+        'CeMercante': ce_mercante,
+        'TipoOperacao': tipo_operacao,
+        'DataInicial': data_inicial,
+        'DataFinal': data_final
+    }
+
+    return call_soap_service(client, "ConsultarMovimentacao", **body, _soapheaders=[header]) 
