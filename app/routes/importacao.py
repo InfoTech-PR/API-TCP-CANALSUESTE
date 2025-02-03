@@ -46,18 +46,4 @@ def movimentacao_importacao_endpoint():
         return jsonify({"error": "Todos os campos são obrigatórios!"}), 400
     
     client = get_soap_client(Config.WSDL_URL_IMPORTACAO)
-    
-    header = {
-        'RequestHeader': {
-            'EmpresaSelecionada': empresa_selecionada
-        }
-    }
-
-    body = {
-        'CeMercante': ce_mercante,
-        'TipoOperacao': tipo_operacao,
-        'DataInicial': data_inicial,
-        'DataFinal': data_final
-    }
-
-    return call_soap_service(client, "ConsultarMovimentacao", **body, _soapheaders=[header]) 
+    return call_soap_service(client, "ConsultarMovimentacao", CeMercante=ce_mercante, TipoOperacao=tipo_operacao, DataInicial=data_inicial, DataFinal=data_final)

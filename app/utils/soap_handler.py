@@ -3,13 +3,13 @@ from flask import jsonify
 from zeep import helpers
 from zeep.exceptions import Fault
 from lxml import etree
+import xml.etree.ElementTree as ET
 
 def call_soap_service(client, method_name, **params):
     try:
         service_method = getattr(client.service, method_name)
         response = service_method(**params)
         response_dict = helpers.serialize_object(response)
-        print(response_dict)
 
         if '_raw_elements' in response_dict:
             raw_elements = response_dict['_raw_elements']
