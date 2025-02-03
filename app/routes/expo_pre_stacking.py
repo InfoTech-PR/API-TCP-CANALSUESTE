@@ -13,8 +13,7 @@ def obter_dados_booking_endpoint():
     armador = data.get('Armador')
     if not booking or not armador:
         return jsonify({"error": "Parâmetro 'Armador' e 'Booking' é obrigatório!"}), 400
-
-    client = get_soap_client(Config.WSDL_URL_PRESTACKING)
+    client = get_soap_client(Config.WSDL_URL_PRESTACKING)    
     return call_soap_service(client, "ObterDadosBooking", Booking=booking, Armador=armador)
 
 @registrar_prestacking_cheio.route('/registrar_prestacking_cheio', methods=['POST'])

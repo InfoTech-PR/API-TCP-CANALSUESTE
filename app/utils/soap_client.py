@@ -1,4 +1,4 @@
-from zeep import Client
+from zeep import Client, Settings
 from zeep.transports import Transport
 from requests.auth import HTTPBasicAuth
 import requests
@@ -9,7 +9,8 @@ def get_soap_client(url, headers=None):
     session = requests.Session()
     session.auth = auth
     transport = Transport(session=session)
-    client = Client(url, transport=transport)
+    settings = Settings(strict=False, xml_huge_tree=True)
+    client = Client(url, transport=transport, settings=settings)
     
     if headers:
         client.set_default_soapheaders(headers)
