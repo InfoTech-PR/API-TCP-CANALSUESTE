@@ -17,11 +17,7 @@ def consulta_movimentacao_endpoint():
     if not data_inicio or not data_fim:
         return jsonify({"error": "Parâmetros 'DataInicio' e 'DataFim' são obrigatórios!"}), 400
 
-    headers = {
-        'wsc:EmpresaSelecionada': empresa
-    }
-
-    client = get_soap_client(Config.WSDL_URL_EMBARQUE) #deve passar aqui o header (do jeito q fiz ainda n funciona)
+    client = get_soap_client(Config.WSDL_URL_EMBARQUE, empresa=empresa)
     return call_soap_service(client, "ConsultarMovimentacao", DataInicio=data_inicio, DataFim=data_fim)
 
 @consulta_due.route('/consulta_due', methods=['POST'])

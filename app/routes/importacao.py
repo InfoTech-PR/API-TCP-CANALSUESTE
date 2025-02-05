@@ -42,8 +42,8 @@ def movimentacao_importacao_endpoint():
     data_final = data.get('DataFinal')
     empresa_selecionada = data.get('EmpresaSelecionada')
     
-    if not all([ce_mercante, tipo_operacao, data_inicial, data_final, empresa_selecionada]):
+    if not all([ce_mercante, tipo_operacao, data_inicial, data_final]):
         return jsonify({"error": "Todos os campos são obrigatórios!"}), 400
     
-    client = get_soap_client(Config.WSDL_URL_IMPORTACAO)
+    client = get_soap_client(Config.WSDL_URL_IMPORTACAO, empresa=empresa_selecionada)
     return call_soap_service(client, "ConsultarMovimentacao", CeMercante=ce_mercante, TipoOperacao=tipo_operacao, DataInicial=data_inicial, DataFinal=data_final)
