@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 from app.utils.soap_client import get_soap_client
 from app.utils.soap_handler import call_soap_service
+from app.utils.validators import validar_parametros_obrigatorios
+from app.utils.validators import validar_parametros_obrigatorios
 from config.config import Config
 
 agendar_unidade = Blueprint('agendar_unidade', __name__)
@@ -11,7 +13,12 @@ deletar_agenda_unidade = Blueprint('deletar_agenda_unidade', __name__)
 @agendar_unidade.route('/agendar_unidade', methods=['POST'])
 def agendar_unidade_endpoint():
     data = request.json
-
+    parametros_obrigatorios = [
+        "GradeConfiguracao", "Transportadora", 
+        "Motorista", "VeiculoTipo",
+        "Conteiner", "DataPrevista"
+        ]
+    
     data_prevista = data.get('DataPrevista')
     grade_configuracao = data.get('GradeConfiguracao')
     tipo_grade = data.get('TipoGrade')
@@ -23,11 +30,10 @@ def agendar_unidade_endpoint():
     placa_reboque1 = data.get('PlacaReboque1')
     placa_reboque2 = data.get('PlacaReboque2')
 
-    if not data_prevista or not grade_configuracao or not tipo_grade or not transportadora or not motorista:
-        return jsonify({"error": "Todos os parâmetros são obrigatórios!"}), 400
-
+    erro = validar_parametros_obrigatorios(data, parametros_obrigatorios)
+    if erro:
+        return erro
     client = get_soap_client(Config.WSDL_URL_GRADE)
-
     return call_soap_service(
         client,
         "AgendarUnidades",
@@ -48,18 +54,18 @@ def agendar_unidade_endpoint():
 @consultar_grade.route('/consultar_grade', methods=['POST'])
 def consultar_grade_endpoint():
     data = request.json
+    
     data_prevista = data.get('DataPrevista')
-
+    
     if not data_prevista:
-        return jsonify({"error": "Parâmetro 'DataPrevista' é obrigatório!"}), 400
-
+        return jsonify({"error": "O parâmetro 'DataPrevista' é obrigatório!"}), 400
     client = get_soap_client(Config.WSDL_URL_GRADE)
     return call_soap_service(client, "ConsultarGrades", DataPrevista=data_prevista)
 
 @editar_agenda_unidade.route('/editar_agenda_unidade', methods=['POST'])
 def editar_agenda_unidade_endpoint():
     data = request.json
-
+    
     id_agendamento = data.get('IdAgendamento')
     grade_configuracao = data.get('GradeConfiguracao')
     transportadora = data.get('Transportadora')
@@ -96,6 +102,5 @@ def deletar_agenda_unidade_endpoint():
 
     if not id_agendamento:
         return jsonify({"error": "O parâmetro 'IdAgendamento' é obrigatório!"}), 400
-
     client = get_soap_client(Config.WSDL_URL_GRADE)
     return call_soap_service(client, "ExcluirAgendamentoUnidades", IdAgendamento=id_agendamento)
