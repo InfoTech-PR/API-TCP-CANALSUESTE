@@ -2,7 +2,6 @@ from flask import Blueprint, request, jsonify
 from app.utils.soap_client import get_soap_client
 from app.utils.soap_handler import call_soap_service
 from app.utils.validators import validar_parametros_obrigatorios
-from app.utils.validators import validar_parametros_obrigatorios
 from config.config import Config
 
 agendar_unidade = Blueprint('agendar_unidade', __name__)
