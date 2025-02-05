@@ -13,32 +13,48 @@ def call_soap_service(client, method_name, **params):
 
         if '_raw_elements' in response_dict:
             raw_elements = response_dict['_raw_elements']
+            namespace = {'wsc': 'http://wsclientes.tcp.com.br'}
+
             for element in raw_elements:
-                if element.tag.endswith('Armador'):
-                    response_dict['Armador'] = element.text
-                elif element.tag.endswith('Booking'):
-                    response_dict['Booking'] = element.text
-                elif element.tag.endswith('NomeNavio'):
-                    response_dict['NomeNavio'] = element.text
-                elif element.tag.endswith('Viagem'):
-                    response_dict['Viagem'] = element.text
-                elif element.tag.endswith('PortoDescarga'):
-                    response_dict['PortoDescarga'] = element.text
-                elif element.tag.endswith('PortoDestino'):
-                    response_dict['PortoDestinoFinal'] = element.text
-                elif element.tag.endswith('CodigoVerificacaoBooking'):
-                    response_dict['CodigoVerificacaoBooking'] = element.text
-                elif element.tag.endswith('ListaISO'):
-                    response_dict['ListaIso'] = [iso.text for iso in element.findall('.//wsc:ISO', namespaces={'wsc': 'http://wsclientes.tcp.com.br'})]
-                elif element.tag.endswith('RetornoValidacao'):
+                armador = element.find('wsc:Armador', namespaces=namespace)
+                booking = element.find('wsc:Booking', namespaces=namespace)
+                nome_navio = element.find('wsc:NomeNavio', namespaces=namespace)
+                viagem = element.find('wsc:Viagem', namespaces=namespace)
+                porto_descarga = element.find('wsc:PortoDescarga', namespaces=namespace)
+                porto_destino = element.find('wsc:PortoDestino', namespaces=namespace)
+                cod_verificacao = element.find('wsc:CodigoVerificacaoBooking', namespaces=namespace)
+                lista_iso = element.find('wsc:ListaISO', namespaces=namespace)
+
+                if armador is not None:
+                    response_dict['Armador'] = armador.text
+                if booking is not None:
+                    response_dict['Booking'] = booking.text
+                if nome_navio is not None:
+                    response_dict['NomeNavio'] = nome_navio.text
+                if viagem is not None:
+                    response_dict['Viagem'] = viagem.text
+                if porto_descarga is not None:
+                    response_dict['PortoDescarga'] = porto_descarga.text
+                if porto_destino is not None:
+                    response_dict['PortoDestinoFinal'] = porto_destino.text
+                if cod_verificacao is not None:
+                    response_dict['CodigoVerificacaoBooking'] = cod_verificacao.text
+                if lista_iso is not None:
+                    response_dict['ListaIso'] = [iso.text for iso in lista_iso.findall('wsc:ISO', namespaces=namespace)]
+
+                retorno_validacao = element.find('wsc:RetornoValidacao', namespaces=namespace)
+                if retorno_validacao is not None:
+                    indicador_erro = retorno_validacao.find('wsc:IndicadorErro', namespaces=namespace)
+                    lista_msg_retorno = retorno_validacao.findall('wsc:ListaMensagemRetornoWs/wsc:MensagemRetornoWs', namespaces=namespace)
+
                     response_dict['RetornoValidacao'] = {
-                        'IndicadorErro': element.findtext('.//wsc:IndicadorErro', namespaces={'wsc': 'http://wsclientes.tcp.com.br'}),
+                        'IndicadorErro': indicador_erro.text if indicador_erro is not None else None,
                         'ListaMensagemRetornoWs': [
                             {
-                                'Codigo': msg.findtext('.//wsc:Codigo', namespaces={'wsc': 'http://wsclientes.tcp.com.br'}),
-                                'Mensagem': msg.findtext('.//wsc:Mensagem', namespaces={'wsc': 'http://wsclientes.tcp.com.br'})
+                                'Codigo': msg.findtext('wsc:Codigo', namespaces=namespace),
+                                'Mensagem': msg.findtext('wsc:Mensagem', namespaces=namespace)
                             }
-                            for msg in element.findall('.//wsc:MensagemRetornoWs', namespaces={'wsc': 'http://wsclientes.tcp.com.br'})
+                            for msg in lista_msg_retorno
                         ]
                     }
 
