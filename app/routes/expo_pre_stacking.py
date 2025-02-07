@@ -1,7 +1,7 @@
 from flask import Blueprint, Response, json, request, jsonify
 from app.utils.soap_client import get_soap_client
 from app.utils.soap_handler import call_soap_service
-from app.utils.validators import test_connection
+from app.utils.validators import test_connection, validar_parametros_banco
 from config.config import Config
 from sqlalchemy import text
 
@@ -118,7 +118,18 @@ def registrar_prestacking_cheio_endpoint():
         response_data = []
 
         for c in conteiners:
-            #verificar dados que devem ser obrigatorios
+            # parametros = [
+            #     "Armador", "Booking", "CnpjExportador", "NumeroConteiner", "PesoLiquido",
+            #     "Tara", "NCM", "Iso", "LacreArmador", "Modal"
+            #     "PesagemVgm", "ChaveAcesso"
+            # ]
+            # validacao_erro = validar_parametros_banco(c, parametros)
+            # if validacao_erro:
+            #     response_data.append({
+            #         "error": validacao_erro
+            #     })
+            #     continue
+            
             dados_exportacao = {
                 "Armador": c.get("ARMADOR") or "",
                 "Booking": c.get("BOOKING") or "",
