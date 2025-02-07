@@ -9,3 +9,4 @@ pycache
 
 # Ignorar arquivos sensiveis
 config.py
+.env

@@ -1,4 +1,5 @@
 from flask import jsonify
+from sqlalchemy import create_engine, text
 
 def validar_parametros_obrigatorios(data, parametros_obrigatorios):
     """
@@ -17,3 +18,20 @@ def validar_parametros_obrigatorios(data, parametros_obrigatorios):
         }), 400
 
     return None 
+
+def testar_conexao(database_uri):
+    """
+    Testa a conexão com o banco de dados usando SQLAlchemy.
+    
+    :param database_uri: URI de conexão do banco de dados.
+    :return: Mensagem indicando sucesso ou erro.
+    """
+    try:
+        engine = create_engine(database_uri)
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+            print("✅ Conexão bem-sucedida!")
+            return engine
+    except Exception as e:
+        print(f"❌ Erro na conexão: {e}")
+        return False
