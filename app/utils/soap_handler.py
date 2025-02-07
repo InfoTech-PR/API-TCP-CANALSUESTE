@@ -61,7 +61,7 @@ def call_soap_service(client, method_name, **params):
             if '_raw_elements' in response_dict:
                 del response_dict['_raw_elements']
         
-        return jsonify(response_dict)
+        return response_dict  
 
     except Fault as fault:
         error_dict = {"error": fault.message}
@@ -70,6 +70,6 @@ def call_soap_service(client, method_name, **params):
                 error_dict["detail"] = fault.detail.xpath("string()").strip() 
             else:
                 error_dict["detail"] = str(fault.detail)
-        return jsonify(error_dict), 400
+        return error_dict  
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return {"error": str(e)}  

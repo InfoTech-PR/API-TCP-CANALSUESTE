@@ -19,7 +19,7 @@ def validar_parametros_obrigatorios(data, parametros_obrigatorios):
 
     return None 
 
-def testar_conexao(database_uri):
+def test_connection(database_uri):
     """
     Testa a conexão com o banco de dados usando SQLAlchemy.
     
