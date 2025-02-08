@@ -1,9 +1,6 @@
-from collections import deque
-from flask import jsonify
 from zeep import helpers
 from zeep.exceptions import Fault
 from lxml import etree
-import xml.etree.ElementTree as ET
 
 def call_soap_service(client, method_name, **params):
     try:

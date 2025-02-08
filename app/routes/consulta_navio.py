@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request
 from app.utils.soap_client import get_soap_client
 from app.utils.validators import validar_parametros_obrigatorios
 from app.utils.soap_handler import call_soap_service

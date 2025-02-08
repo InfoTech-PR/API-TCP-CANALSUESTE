@@ -19,22 +19,7 @@ def validar_parametros_obrigatorios(data, parametros_obrigatorios):
 
     return None 
 
-def validar_parametros_banco(container_data, parametros):
-    parametros_invalidos = []
-
-    for param in parametros:
-        if not container_data.get(param):
-            parametros_invalidos.append(param)
-
-    if parametros_invalidos:
-        return jsonify({
-            "error": "Os seguintes parâmetros estão inválidos (vazios ou nulos):",
-            "parametros_invalidos": parametros_invalidos
-        }), 400
-
-    return None
-
-def test_connection(database_uri):
+def test_connection_database(database_uri):
     """
     Testa a conexão com o banco de dados usando SQLAlchemy.
     

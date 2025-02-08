@@ -1,14 +1,14 @@
 from flask import Blueprint, Response, json, request, jsonify
 from app.utils.soap_client import get_soap_client
 from app.utils.soap_handler import call_soap_service
-from app.utils.validators import test_connection, validar_parametros_banco
+from app.utils.validators import test_connection_database
 from config.config import Config
 from sqlalchemy import text
 
 obter_dados_booking = Blueprint('obter_dados_booking', __name__)
 registrar_prestacking_cheio = Blueprint('registrar_prestacking_cheio', __name__)
 
-engine = test_connection(Config.DATABASE_URI)
+engine = test_connection_database(Config.DATABASE_URI)
 
 @obter_dados_booking.route('/obter_dados_booking', methods=['POST'])
 def obter_dados_booking_endpoint():
@@ -118,18 +118,6 @@ def registrar_prestacking_cheio_endpoint():
         response_data = []
 
         for c in conteiners:
-            # parametros = [
-            #     "Armador", "Booking", "CnpjExportador", "NumeroConteiner", "PesoLiquido",
-            #     "Tara", "NCM", "Iso", "LacreArmador", "Modal"
-            #     "PesagemVgm", "ChaveAcesso"
-            # ]
-            # validacao_erro = validar_parametros_banco(c, parametros)
-            # if validacao_erro:
-            #     response_data.append({
-            #         "error": validacao_erro
-            #     })
-            #     continue
-            
             dados_exportacao = {
                 "Armador": c.get("ARMADOR") or "",
                 "Booking": c.get("BOOKING") or "",
@@ -175,10 +163,12 @@ def registrar_prestacking_cheio_endpoint():
                 "ListaNFe": lista_nfe,
                 "DadosExportacao": dados_exportacao
             }
+
             response = call_soap_service(client, "RegistrarPrestackingCheio", **body)        
             response_data.append({
                 "response": response
             })
+            
         return jsonify(response_data), 200
 
     except Exception as e:
