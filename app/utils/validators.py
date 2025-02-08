@@ -20,16 +20,9 @@ def validar_parametros_obrigatorios(data, parametros_obrigatorios):
     return None 
 
 def test_connection_database(database_uri):
-    """
-    Testa a conexão com o banco de dados usando SQLAlchemy.
-    
-    :param database_uri: URI de conexão do banco de dados.
-    :return: Mensagem indicando sucesso ou erro.
-    """
     try:
         engine = create_engine(database_uri)
         with engine.connect() as connection:
-            connection.execute(text("SELECT 1"))
             print("✅ Conexão bem-sucedida!")
             return engine
     except Exception as e:

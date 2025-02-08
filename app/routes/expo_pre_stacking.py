@@ -10,7 +10,7 @@ registrar_prestacking_cheio = Blueprint('registrar_prestacking_cheio', __name__)
 
 engine = test_connection_database(Config.DATABASE_URI)
 
-@obter_dados_booking.route('/obter_dados_booking', methods=['POST'])
+@obter_dados_booking.route('/obter_dados_booking', methods=['GET'])
 def obter_dados_booking_endpoint():
     try:
         data = request.get_json()
@@ -80,7 +80,7 @@ def obter_dados_booking_endpoint():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@registrar_prestacking_cheio.route('/registrar_prestacking_cheio', methods=['POST'])
+@registrar_prestacking_cheio.route('/registrar_prestacking_cheio', methods=['GET'])
 def registrar_prestacking_cheio_endpoint():
     try:
         data = request.get_json()
