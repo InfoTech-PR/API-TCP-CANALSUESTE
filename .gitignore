@@ -10,3 +10,4 @@ pycache
 # Ignorar arquivos sensiveis
 config.py
 .env
+anotacoes.ext

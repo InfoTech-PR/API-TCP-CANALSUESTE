@@ -6,7 +6,7 @@ data = {
     "CODIGO": "16"
 }
 
-response = requests.post(url_dados_booking, json=data)
+response = requests.get(url_registrar_prestacking_cheio, json=data)
 response_json = response.json()
 
 if response_json:
