@@ -13,8 +13,7 @@ engine = test_connection_database(Config.DATABASE_URI)
 @obter_dados_booking.route('/obter_dados_booking', methods=['GET'])
 def obter_dados_booking_endpoint():
     try:
-        data = request.get_json()
-        codigo = data.get('CODIGO')
+        codigo = request.args.get('CODIGO')
 
         if not codigo:
             return jsonify({"error": "Parâmetro 'CODIGO' é obrigatório!"}), 400
@@ -83,8 +82,7 @@ def obter_dados_booking_endpoint():
 @registrar_prestacking_cheio.route('/registrar_prestacking_cheio', methods=['GET'])
 def registrar_prestacking_cheio_endpoint():
     try:
-        data = request.get_json()
-        codigo = data.get('CODIGO')
+        codigo = request.args.get('CODIGO')
 
         if not codigo:
             return jsonify({"error": "Parâmetro 'CODIGO' é obrigatório!"}), 400
