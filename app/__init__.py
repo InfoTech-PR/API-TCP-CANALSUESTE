@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from flasgger import Swagger
 from config.config import Config
 import logging
 from flask_cors import CORS
@@ -16,6 +17,8 @@ def create_app():
     app.config.from_object(Config)
     CORS(app)
     # CORS(app, resources={r"/api/*": {"origins": "http://example.com"}})
+
+    Swagger(app)
     
     @app.route('/', methods=['GET'])
     def home():

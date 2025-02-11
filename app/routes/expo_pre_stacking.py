@@ -12,6 +12,38 @@ engine = test_connection_database(Config.DATABASE_URI)
 
 @obter_dados_booking.route('/obter_dados_booking', methods=['GET'])
 def obter_dados_booking_endpoint():
+    """
+    Endpoint para obter dados de booking dos containers.
+    ---
+    parameters:
+      - name: CODIGO
+        in: query
+        type: string
+        required: true
+        description: Código do processo para buscar os containers.
+    responses:
+      200:
+        description: Dados dos containers com informações do booking e armador.
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              container:
+                type: string
+              booking:
+                type: string
+              armador:
+                type: string
+              response:
+                type: object
+      400:
+        description: Parâmetro 'CODIGO' é obrigatório.
+      404:
+        description: Não foi encontrado nenhum controle ou container com o código fornecido.
+      500:
+        description: Erro interno do servidor.
+    """
     try:
         codigo = request.args.get('CODIGO')
 
@@ -81,6 +113,38 @@ def obter_dados_booking_endpoint():
 
 @registrar_prestacking_cheio.route('/registrar_prestacking_cheio', methods=['GET'])
 def registrar_prestacking_cheio_endpoint():
+    """
+    Endpoint para registrar dados de prestacking.
+    ---
+    parameters:
+      - name: CODIGO
+        in: query
+        type: string
+        required: true
+        description: Código do processo para buscar os containers.
+    responses:
+      200:
+        description: Dados dos containers com informações do booking e armador.
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              container:
+                type: string
+              booking:
+                type: string
+              armador:
+                type: string
+              response:
+                type: object
+      400:
+        description: Parâmetro 'CODIGO' é obrigatório.
+      404:
+        description: Não foi encontrado nenhum controle ou container com o código fornecido.
+      500:
+        description: Erro interno do servidor.
+    """
     try:
         codigo = request.args.get('CODIGO')
 
