@@ -15,7 +15,7 @@
 module.exports = {
   apps: [{
     name: 'API-CANALSUESTE',
-    script: 'usr/python3/bin',
+    script: 'usr/bin/python3',
     args: 'run.py',
     instances: 1,
     exec_mode: 'fork',
