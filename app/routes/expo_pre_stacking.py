@@ -1,14 +1,14 @@
 from flask import Blueprint, Response, json, request, jsonify
 from app.utils.soap_client import get_soap_client
 from app.utils.soap_handler import call_soap_service
-from app.utils.validators import test_connection_database
+from app.utils.validators import get_database_engine
 from config.config import Config
 from sqlalchemy import text
 
 obter_dados_booking = Blueprint('obter_dados_booking', __name__)
 registrar_prestacking_cheio = Blueprint('registrar_prestacking_cheio', __name__)
 
-engine = test_connection_database(Config.DATABASE_URI)
+engine = get_database_engine(Config.DATABASE_URI)
 
 @obter_dados_booking.route('/obter_dados_booking', methods=['GET'])
 def obter_dados_booking_endpoint():
