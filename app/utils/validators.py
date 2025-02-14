@@ -21,7 +21,11 @@ def validar_parametros_obrigatorios(data, parametros_obrigatorios):
 
 def test_connection_database(database_uri):
     try:
-        engine = create_engine(database_uri)
+        engine = create_engine(
+            database_uri,
+            pool_recycle=3600, 
+            pool_pre_ping=True
+        )
         with engine.connect() as connection:
             print("✅ Conexão bem-sucedida!")
             return engine
