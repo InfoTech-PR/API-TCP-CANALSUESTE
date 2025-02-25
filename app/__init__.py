@@ -6,8 +6,7 @@ from flask_cors import CORS
 from app.routes.consulta_navio import consulta_navio
 from app.routes.agendamento_expo_cheio import agendar_unidade, consultar_grade, editar_agenda_unidade, deletar_agenda_unidade
 from app.routes.expo_pre_stacking import obter_dados_booking, registrar_prestacking_cheio
-from app.routes.expo_sol_embarque import consulta_due, solicitar_ordem_embarque_due, consulta_movimentacao
-from app.routes.expo_rolagem import rolagem_carga, obter_dados_booking_rolagem
+from app.routes.expo_sol_embarque import consulta_due, solicitar_ordem_embarque_due, consulta_movimentacao, consulta_booking, excluir_conteiner, rolagem_carga
 from app.routes.importacao import bloqueio_nvo, bloqueio_nvo_master, movimentacao_importacao
 
 # logging.basicConfig(level=logging.DEBUG)
@@ -22,12 +21,29 @@ def create_app():
     
     @app.route('/', methods=['GET'])
     def home():
-        rotas = [rule.rule for rule in app.url_map.iter_rules()]
+        rotas = []
+        doc = []
+        testes = []
+
+        # Filtra as rotas
+        for rule in app.url_map.iter_rules():
+            if '/apidocs/' in rule.rule or '/flasgger_static/' in rule.rule:
+                doc.append(rule.rule)
+            elif '/static/' in rule.rule:
+                doc.append(rule.rule)
+            else:
+                if 'test' in rule.rule:  # Verifica se a rota é de teste
+                    testes.append(rule.rule)
+                else:
+                    rotas.append(rule.rule)
+
         return jsonify(
             {
                 "Message": "Bem-vindo a API DO CANAL SUESTE!", 
                 "Developed by": "Josue Henrique InfoTech",
-                "Rotas": rotas
+                "Rotas": rotas,
+                "Documentação": doc,
+                "Testes": testes
             }
         )
 
@@ -41,8 +57,9 @@ def create_app():
     app.register_blueprint(consulta_due)
     app.register_blueprint(solicitar_ordem_embarque_due)
     app.register_blueprint(consulta_movimentacao)
-    # app.register_blueprint(rolagem_carga)
-    # app.register_blueprint(obter_dados_booking_rolagem)
+    app.register_blueprint(rolagem_carga)
+    app.register_blueprint(consulta_booking)
+    app.register_blueprint(excluir_conteiner)
     app.register_blueprint(bloqueio_nvo)
     app.register_blueprint(bloqueio_nvo_master)
     app.register_blueprint(movimentacao_importacao)
