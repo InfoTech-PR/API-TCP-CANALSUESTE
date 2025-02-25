@@ -66,15 +66,12 @@ def consulta_booking_endpoint():
 def excluir_conteiner_endpoint():
     data = request.json
     conteiner = data.get('Conteiner')
-    booking = data.get('Booking')
-    armador = data.get('Armador')
-    navio_indefinido = data.get('NavioIndefinido', False)
 
-    if not conteiner or not booking or not armador:
-        return jsonify({"error": "Os parâmetros 'Conteiner', 'Booking' e 'Armador' são obrigatórios!"}), 400
+    if not conteiner:
+        return jsonify({"error": "O parâmetro 'Conteiner' é obrigatórios!"}), 400
 
     client = get_soap_client(Config.WSDL_URL_EMBARQUE)
-    return call_soap_service(client, "RolagemCarga",Conteiner=conteiner, Booking=booking, Armador=armador, NavioIndefinido=navio_indefinido)
+    return call_soap_service(client, "ExclusaoConteiner", ExclusaoConteiner={"Conteiner": conteiner})
 
 @rolagem_carga.route('/rolagem_carga', methods=['POST'])
 def rolagem_carga_endpoint():
