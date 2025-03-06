@@ -1,35 +1,60 @@
-from flask import Flask, jsonify
+from flask import Flask, Response
 from flasgger import Swagger
 from config.config import Config
-import logging
+from datetime import datetime
 from flask_cors import CORS
+from collections import OrderedDict
 from app.routes.consulta_navio import consulta_navio
 from app.routes.agendamento_expo_cheio import agendar_unidade, consultar_grade, editar_agenda_unidade, deletar_agenda_unidade
 from app.routes.expo_pre_stacking import obter_dados_booking, registrar_prestacking_cheio
 from app.routes.expo_sol_embarque import consulta_due, solicitar_ordem_embarque_due, consulta_movimentacao, consulta_booking, excluir_conteiner, rolagem_carga
 from app.routes.importacao import bloqueio_nvo, bloqueio_nvo_master, movimentacao_importacao
+import json
 
-# logging.basicConfig(level=logging.DEBUG)
+start_time = datetime.now()
+
+def get_uptime():
+    uptime = datetime.now() - start_time
+    return f"{uptime.seconds // 3600}h {uptime.seconds % 3600 // 60}m {uptime.seconds % 60}s"
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
     CORS(app)
-    # CORS(app, resources={r"/api/*": {"origins": "http://example.com"}})
 
     Swagger(app)
     
     @app.route('/', methods=['GET'])
     def home():
-        rotas = [rule.rule for rule in app.url_map.iter_rules()]
-        return jsonify(
-            {
-                "Message": "Bem-vindo a API DO CANAL SUESTE!", 
-                "Developed by": "Josue Henrique InfoTech",
-                "Rotas": rotas
-            }
-        )
+        response = OrderedDict({
+            "status": "API-TCP-CANALSUESTE",
+            "uptime": get_uptime(),
+            "timestamp": datetime.now().strftime("%d/%m/%Y, %H:%M:%S"),
+            "developed": "Josue Henrique",
+            "portfolio": "https://josuashenrique.site/",
+            "rotas": [
+                "GET /",
+                "GET /consulta-navio",
+                "POST /agendar-unidade",
+                "GET /consultar-grade",
+                "PATCH /editar-agenda-unidade",
+                "DELETE /deletar-agenda-unidade",
+                "GET /obter-dados-booking",
+                "GET /registrar-prestacking-cheio",
+                "GET /consulta-due",
+                "POST /solicitar-ordem-embarque-due",
+                "GET /consulta-movimentacao",
+                "GET /consulta-booking",
+                "DELETE /excluir-conteiner",
+                "POST /rolagem-carga",
+                "POST /bloqueio-nvo",
+                "POST /bloqueio-nvo-master",
+                "GET /movimentacao-importacao"
+            ]
+        })
+        return Response(json.dumps(response, ensure_ascii=False, indent=4, sort_keys=False), mimetype="application/json")
 
+    # Registrar rotas
     app.register_blueprint(consulta_navio)
     app.register_blueprint(consultar_grade)
     app.register_blueprint(agendar_unidade)
