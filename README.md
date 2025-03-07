@@ -8,4 +8,4 @@ Api desenvolvida para coleta de dados fornecidos pela TCP, e usado em banco pró
 - [X] *Testes Funcionais*                {usado o POSTMAN, para simular fluxos complexots e verificar respostas com dados corretos}
 - [X] *Testes de Carga e Desempenho*     {usado o LOCUST, onde pude simular 100 usuarios simultaneos chamando os endpoints}
 - [X] *Testes de Segurança*              {usado o OWASP ZAP, foi feito por padrão ataques a API, onde trouxe resultados de riscos baixos}
-- [] *CI/CD e Automação*                {}
+- [X] *CI/CD e Automação*                {usado o Github ACTIONS, foi feito um arquivo de teste para as rotas e a cada commit, o github se encarrega de testar as rotas}
