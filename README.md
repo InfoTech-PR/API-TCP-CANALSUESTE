@@ -3,7 +3,7 @@ Api desenvolvida para coleta de dados fornecidos pela TCP, e usado em banco pró
 
 # QA - aplicado
 
-- [ X ] Testes Unitários            {usado o SOAPUI, para simular respostas e ver o tratamento de forma correta}                
+- [X] Testes Unitários            {usado o SOAPUI, para simular respostas e ver o tratamento de forma correta}                
 - [ ] Testes de Integração
 - [ ] Testes Funcionais
 - [ ] Testes de Carga e Desempenho
