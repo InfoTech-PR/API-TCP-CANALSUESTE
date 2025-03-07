@@ -46,7 +46,7 @@ def solicitar_ordem_embarque_due_endpoint():
     if not isinstance(conteineres, list):
         return jsonify({"error": "'Conteineres' deve ser uma lista de contêineres!"}), 400
 
-    conteineres_soap = [{"Conteiner": c["Conteiner"]} for c in conteineres]
+    conteineres_soap = [{"Conteiner": c} for c in conteineres]
     client = get_soap_client(Config.WSDL_URL_EMBARQUE)
     return call_soap_service(client, "SolicitarOrdemEmbarqueDue", NumeroDue=numero_due, AceiteAvarias=aceite_avarias, Conteineres=conteineres_soap)
 
