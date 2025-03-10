@@ -15,40 +15,29 @@ def agendar_unidade_endpoint():
     parametros_obrigatorios = [
         "GradeConfiguracao", "Transportadora", 
         "Motorista", "VeiculoTipo",
-        "Conteiner", "DataPrevista"
+        "Conteineres", "DataPrevista"
         ]
-    
-    data_prevista = data.get('DataPrevista')
-    grade_configuracao = data.get('GradeConfiguracao')
-    tipo_grade = data.get('TipoGrade')
-    transportadora = data.get('Transportadora')
-    motorista = data.get('Motorista')
-    veiculo_tipo = data.get('VeiculoTipo')
-    veiculo_placa_principal = data.get('VeiculoPlacaPrincipal')
-    conteiner = data.get('Conteiner')
-    placa_reboque1 = data.get('PlacaReboque1')
-    placa_reboque2 = data.get('PlacaReboque2')
 
     erro = validar_parametros_obrigatorios(data, parametros_obrigatorios)
     if erro:
         return erro
     client = get_soap_client(Config.WSDL_URL_GRADE)
     return call_soap_service(
-        client,
-        "AgendarUnidades",
-        GradeConfiguracao=grade_configuracao,
-        TipoGrade=tipo_grade,
-        Transportadora=transportadora,
-        Motorista=motorista,
-        Veiculo={
-            'Tipo': veiculo_tipo,
-            'PlacaPrincipal': veiculo_placa_principal,
-            'PlacaReboque1': placa_reboque1,
-            'PlacaReboque2': placa_reboque2
-        },
-        Conteineres=[{'Conteiner': conteiner}],
-        DataPrevista=data_prevista
-    )
+            client,
+            "AgendarUnidades",
+            GradeConfiguracao=data["GradeConfiguracao"],
+            TipoGrade=data.get("TipoGrade", ""),
+            Transportadora=data["Transportadora"],
+            Motorista=data["Motorista"],
+            Veiculo={
+                "Tipo": data["VeiculoTipo"],
+                "PlacaPrincipal": data.get("VeiculoPlacaPrincipal", ""),
+                "PlacaReboque1": data.get("PlacaReboque1", ""),
+                "PlacaReboque2": data.get("PlacaReboque2", "")
+            },
+            Conteineres=[{"Conteiner": c} for c in data["Conteineres"]],
+            DataPrevista=data["DataPrevista"]
+        )
 
 @consultar_grade.route('/consultar_grade', methods=['POST'])
 def consultar_grade_endpoint():
